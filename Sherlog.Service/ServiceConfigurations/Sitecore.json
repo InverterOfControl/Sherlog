@@ -1,0 +1,9 @@
+{
+  "ServiceName": "Sitecore",
+  "LogPath": "C:\\inetpub\\wwwroot\\gasag-sc\\App_Data\\logs",
+  "CustomDateRegex": "",
+  "BackupPath": "C:\\temp",
+  "DoBackups": "true",
+  "RotationInterval": "7",
+  "DaysToKeepUnprocessed": "7"
+}
