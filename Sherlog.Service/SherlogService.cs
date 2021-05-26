@@ -18,6 +18,7 @@ namespace Sherlog.Service
 
         private Timer mainScheduler;
 
+        private SherlogServer server;
 
         public bool Start(HostControl hostControl)
         {
@@ -35,7 +36,7 @@ namespace Sherlog.Service
 
             Log.Debug("Scheduler started!");
 
-            var server = new SherlogServer(appConfig.ListenAddress, appConfig.ListenPort);
+            server = new SherlogServer(appConfig.ListenAddress, appConfig.ListenPort);
 
             if (server.Start())
             {
@@ -58,6 +59,7 @@ namespace Sherlog.Service
         public bool Stop(HostControl hostControl)
         {
             mainScheduler.Stop();
+            server.Stop();
             Log.Debug("Service stopped!");
             return false;
         }
