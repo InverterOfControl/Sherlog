@@ -6,7 +6,7 @@
 
         public string LogPath { get; set; }
 
-        public string CustomDateRegex { get; set; }
+        public string DateFormat { get; set; }
 
         public string BackupPath { get; set; }
 
