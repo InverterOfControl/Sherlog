@@ -1,6 +1,6 @@
 {
   "ServiceName": "Sitecore",
-  "LogPath": "C:\\inetpub\\wwwroot\\gasag-sc\\App_Data\\logs",
+  "LogPath": "C:\\inetpub\\wwwroot\\sc910-sc\\App_Data\\logs",
   "DateFormat": "log.yyyyMMdd",
   "BackupPath": "C:\\Users\\ga887612\\OneDrive - GASAG\\Documents\\LogBackups",
   "DoBackups": "true",

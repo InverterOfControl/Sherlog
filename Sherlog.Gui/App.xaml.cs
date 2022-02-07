@@ -25,6 +25,6 @@ namespace Sherlog.Gui
             var config = Configuration.Get<AppConfig>();
 
             Connector.Connect(config);
-        }
+    }
     }
 }

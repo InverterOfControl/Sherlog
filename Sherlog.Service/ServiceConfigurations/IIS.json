@@ -1,6 +1,6 @@
 {
   "ServiceName": "IIS",
-  "LogPath": "C:\\inetpub\\logs\\LogFiles\\W3SVC3",
+  "LogPath": "C:\\inetpub\\logs\\LogFiles",
   "DateFormat": "log.yyyyMMdd",
   "BackupPath": "C:\\Users\\ga887612\\OneDrive - GASAG\\Documents\\LogBackups",
   "DoBackups": "true",

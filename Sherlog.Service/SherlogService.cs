@@ -14,90 +14,108 @@ using Topshelf;
 
 namespace Sherlog.Service
 {
-    public class SherlogService : ServiceControl
+  public class SherlogService : ServiceControl
+  {
+    private AppConfiguration appConfig;
+
+    public static IEnumerable<ServiceConfiguration> serviceConfigurations;
+
+    private Timer mainScheduler;
+
+    private SherlogServer server;
+
+    public bool Start(HostControl hostControl)
     {
-        private AppConfiguration appConfig;
+      appConfig = ConfigBuilder.GetConfig<AppConfiguration>("appsettings.json");
+      serviceConfigurations = ConfigBuilder.BuildServiceConfigs();
 
-        public static IEnumerable<ServiceConfiguration> serviceConfigurations;
+      mainScheduler = new Timer
+      {
+        Interval = 60000 * appConfig.MinutesBetweenChecks
+      };
 
-        private Timer mainScheduler;
+      mainScheduler.Elapsed += new ElapsedEventHandler(MainCheckLoop);
 
-        private SherlogServer server;
+      mainScheduler.Start();
 
-        public bool Start(HostControl hostControl)
-        {
-            appConfig = ConfigBuilder.GetConfig<AppConfiguration>("appsettings.json");
-            serviceConfigurations = ConfigBuilder.BuildServiceConfigs();
-            
-            mainScheduler = new Timer
-            {
-                Interval = 60000 * appConfig.MinutesBetweenChecks
-            };
+      Log.Debug("Scheduler started!");
 
-            mainScheduler.Elapsed += new ElapsedEventHandler(MainCheckLoop);
+      server = new SherlogServer(appConfig.ListenAddress, appConfig.ListenPort);
 
-            mainScheduler.Start();
+      if (server.Start())
+      {
+        Log.Debug("Messaging-Server started!");
+      }
 
-            Log.Debug("Scheduler started!");
-
-            server = new SherlogServer(appConfig.ListenAddress, appConfig.ListenPort);
-
-            if (server.Start())
-            {
-                Log.Debug("Messaging-Server started!");
-            }
-
-            return true;
-        }
-
-        private void MainCheckLoop(object sender, ElapsedEventArgs e)
-        {
-            Log.Debug("Execute mainloop");
-
-            foreach (var service in serviceConfigurations)
-            {
-                Log.Information($"Looking for logs for {service.ServiceName}");
-
-                var logs = Directory.GetFiles(service.LogPath);
-
-                List<LogProcessModel> logsToProcess = new List<LogProcessModel>();
-
-                foreach (string log in logs)
-                {
-                    var date = Parser.TryExtractDateFromFilename(log);
-
-                    if (date == null) continue;
-
-                    if ((DateTime.UtcNow - date.Value).Days < service.DaysToKeepUnprocessed)
-                    {
-                        continue;
-                    }
-
-                    logsToProcess.Add(new LogProcessModel(log, date.Value));
-                }
-
-                foreach (var logresult in Grouper.GroupLogs(logsToProcess))
-                {
-                    if (service.DoBackups)
-                    {
-                        string newFileName = $"{service.BackupPath}\\{logresult.LogTypeName}.{logresult.Timerange}.zip";
-
-                        Compressor.Compress(logresult.Filepaths.ToArray(), newFileName);
-                    }
-
-                    Deleter.Delete(logresult.Filepaths.ToArray());
-                }
-
-            }
-        }
-
-        public bool Stop(HostControl hostControl)
-        {
-            mainScheduler.Stop();
-            server.Stop();
-            Log.Debug("Service stopped!");
-            return false;
-        }
-
+      return true;
     }
+
+    private void MainCheckLoop(object sender, ElapsedEventArgs e)
+    {
+      Log.Debug("Execute mainloop");
+
+      foreach (var service in serviceConfigurations)
+      {
+        Log.Information($"Looking for logs for {service.ServiceName}");
+
+        IEnumerable<string> logs;
+        try
+        {
+          logs = Crawler.GetAllFiles(service.LogPath);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+          Log.Error(ex, "Error while accessing Path {Path}. Make sure service runs with correct permissions.", service.LogPath);
+          continue;
+        } catch(DirectoryNotFoundException ex)
+        {
+          Log.Error(ex, "Could not find Path {Path}. Double-check your config for {Service}!", service.LogPath, service.ServiceName);
+          continue;
+        }catch(Exception ex)
+        {
+          Log.Error(ex, "Something did not work :(");
+          continue;
+        }
+
+
+        List<LogProcessModel> logsToProcess = new List<LogProcessModel>();
+
+        foreach (string log in logs)
+        {
+          var date = Parser.TryExtractDateFromFilename(log);
+
+          if (date == null) continue;
+
+          if ((DateTime.UtcNow - date.Value).Days < service.DaysToKeepUnprocessed)
+          {
+            continue;
+          }
+
+          logsToProcess.Add(new LogProcessModel(log, date.Value));
+        }
+
+        foreach (var logresult in Grouper.GroupLogs(logsToProcess))
+        {
+          if (service.DoBackups)
+          {
+            string newFileName = $"{service.BackupPath}\\{logresult.LogTypeName}.{logresult.Timerange}.zip";
+
+            Compressor.Compress(logresult.Filepaths.ToArray(), newFileName);
+          }
+
+          Deleter.Delete(logresult.Filepaths.ToArray());
+        }
+
+      }
+    }
+
+    public bool Stop(HostControl hostControl)
+    {
+      mainScheduler.Stop();
+      server.Stop();
+      Log.Debug("Service stopped!");
+      return false;
+    }
+
+  }
 }
