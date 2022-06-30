@@ -6,35 +6,47 @@
         xmlns:local="clr-namespace:Sherlog.Gui"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <DockPanel>
-        <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem>
-                <TextBlock Name="lblConnectionStatus" />
-            </StatusBarItem>
-        </StatusBar>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-           
-            <ListView Grid.Column="0" ItemsSource="{Binding Path=ServiceConfigurations, UpdateSourceTrigger=PropertyChanged}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <WrapPanel>
-                            <TextBlock Text="Name: " />
-                            <TextBlock Text="{Binding ServiceName}" FontWeight="Bold" />
-                            <TextBlock Text=", " />
-                            <TextBlock Text="BackupPath: " />
-                            <TextBlock Text="{Binding BackupPath}" FontWeight="Bold" />
-                            <TextBlock Text=" (" />
-                            <TextBlock Text="{Binding RotationInterval}" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" />
-                            <TextBlock Text=")" />
-                        </WrapPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <Button Grid.Column="1" Click="Button_Click">Get Configs</Button>
-        </Grid>
-    </DockPanel>
+  <DockPanel>
+    <StatusBar DockPanel.Dock="Bottom">
+      <StatusBarItem>
+        <TextBlock Name="lblConnectionStatus" />
+      </StatusBarItem>
+    </StatusBar>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="2*" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <ListView Grid.Column="0" ItemsSource="{Binding Path=ServiceConfigurations, UpdateSourceTrigger=PropertyChanged}">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <WrapPanel>
+              <TextBlock Text="Name: " />
+              <TextBlock Text="{Binding ServiceName}" FontWeight="Bold" />
+              <TextBlock Text=", " />
+              <TextBlock Text="BackupPath: " />
+              <TextBlock Text="{Binding BackupPath}" FontWeight="Bold" />
+              <TextBlock Text=" (" />
+              <TextBlock Text="{Binding RotationInterval}" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" />
+              <TextBlock Text=")" />
+            </WrapPanel>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.ItemContainerStyle>
+          <Style TargetType="ListViewItem">
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItem_PreviewMouseLeftButtonDown" />
+          </Style>
+        </ListView.ItemContainerStyle>
+      </ListView>
+      <StackPanel Grid.Column="1">
+        <ListView ItemsSource="{Binding Path=SelectedConfiguration, UpdateSourceTrigger=PropertyChanged}">
+          <ListViewItem>
+            <TextBlock Text="{Binding ServiceName}" FontWeight="Bold" />
+          </ListViewItem>
+        </ListView>
+        <Button Click="Button_Click">Get Configs</Button>
+      </StackPanel>
+    </Grid>
+  </DockPanel>
 </Window>

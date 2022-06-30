@@ -16,7 +16,7 @@ namespace Sherlog.Service.Actions
       while (pending.Count != 0)
       {
         var path = pending.Pop();
-        string[]? next = null;
+        string[] next = null;
         try
         {
           next = Directory.GetFiles(path);

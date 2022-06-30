@@ -29,6 +29,8 @@ namespace Sherlog.Service
       appConfig = ConfigBuilder.GetConfig<AppConfiguration>("appsettings.json");
       serviceConfigurations = ConfigBuilder.BuildServiceConfigs();
 
+      
+
       mainScheduler = new Timer
       {
         Interval = 60000 * appConfig.MinutesBetweenChecks

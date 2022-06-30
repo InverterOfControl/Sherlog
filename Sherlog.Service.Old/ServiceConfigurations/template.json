@@ -1,0 +1,9 @@
+{
+  "ServiceName": "",
+  "LogPath": "",
+  "CustomDateRegex": "",
+  "BackupPath": "",
+  "DoBackups": "",
+  "RotationInterval": "",
+  "DaysToKeepUnprocessed":  ""
+}

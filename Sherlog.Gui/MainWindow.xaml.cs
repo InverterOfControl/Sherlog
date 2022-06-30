@@ -1,8 +1,12 @@
-﻿using Sherlog.Gui.Connection;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using Sherlog.Gui.Viewmodels;
 using Sherlog.Shared.Models;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Sherlog.Gui
 {
@@ -11,43 +15,58 @@ namespace Sherlog.Gui
   /// </summary>
   public partial class MainWindow : Window
   {
-    public MainWindow()
+    HubConnection connection;
+
+    public MainWindow(HubConnection conn)
     {
       InitializeComponent();
 
-      DataContext = new SherlogViewModel
+      connection = conn;
+
+      connection.Closed += async (error) =>
       {
-        ServiceConfigurations = new System.Collections.Generic.List<Shared.Models.ServiceConfiguration>{
-                new Shared.Models.ServiceConfiguration { ServiceName = "Test", BackupPath = "None" }
-                }
+        lblConnectionStatus.Text = "not connected to service!";
+        await Task.Delay(new Random().Next(0, 5) * 1000);
+        await connection.StartAsync();
       };
 
-      string isConnected = Connector.IsConnected ? "Connected" : "Not connected";
+      connection.On<IList<ServiceConfiguration>>("ReceiveConfigs", (configs) =>
+      {
+        UpdateList(configs);
+      });
+    } 
 
-      lblConnectionStatus.Text = $"{isConnected} to service!";
-    }
-
-    public void UpdateList(List<ServiceConfiguration> list)
+    public void UpdateList(IList<ServiceConfiguration> list)
     {
       DataContext =
       new SherlogViewModel
       {
-        ServiceConfigurations = list
+        ServiceConfigurations = (List<ServiceConfiguration>)list
       };
     }
 
     private void txtEditor_SelectionChanged(object sender, RoutedEventArgs e)
     {
-      string isConnected = Connector.IsConnected ? "Connected" : "Not connected";
+      string isConnected = connection.State == HubConnectionState.Connected ? "Connected" : "Not connected";
+
       lblConnectionStatus.Text = $"{isConnected} to service!";
       //int row = txtEditor.GetLineIndexFromCharacterIndex(txtEditor.CaretIndex);
       //int col = txtEditor.CaretIndex - txtEditor.GetCharacterIndexFromLineIndex(row);
       //lblConnectionStatus.Text = "Line " + (row + 1) + ", Char " + (col + 1);
     }
 
-    private void Button_Click(object sender, RoutedEventArgs e)
+    private async void Button_Click(object sender, RoutedEventArgs e)
     {
-      Connector.RequestConfigurations();
+      await connection.InvokeAsync("RequestAllConfigs");
+    }
+
+    private void ListViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+      var item = sender as ListViewItem;
+      if (item != null && item.IsSelected)
+      {
+        ((SherlogViewModel)DataContext).SelectedConfiguration = (ServiceConfiguration)item.Content;
+      }
     }
   }
 }

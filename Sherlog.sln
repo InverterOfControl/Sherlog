@@ -1,16 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30711.63
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sherlog.Service", "Sherlog.Service\Sherlog.Service.csproj", "{B0BA5155-8303-49A9-8083-F02FD3E6AFDC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sherlog.Gui", "Sherlog.Gui\Sherlog.Gui.csproj", "{96EB6157-4DB3-444C-8C5F-38280AB5C0CF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B0BA5155-8303-49A9-8083-F02FD3E6AFDC} = {B0BA5155-8303-49A9-8083-F02FD3E6AFDC}
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sherlog.Shared", "Sherlog.Shared\Sherlog.Shared.csproj", "{DF4ABF0A-17B3-45D1-BFE4-6D2D1CC78499}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sherlog.Shared", "Sherlog.Shared\Sherlog.Shared.csproj", "{DF4ABF0A-17B3-45D1-BFE4-6D2D1CC78499}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sherlog.Service", "Sherlog.Service\Sherlog.Service.csproj", "{BC42624A-88BA-4B40-86E2-D137A42FD270}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B0BA5155-8303-49A9-8083-F02FD3E6AFDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0BA5155-8303-49A9-8083-F02FD3E6AFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0BA5155-8303-49A9-8083-F02FD3E6AFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0BA5155-8303-49A9-8083-F02FD3E6AFDC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{96EB6157-4DB3-444C-8C5F-38280AB5C0CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{96EB6157-4DB3-444C-8C5F-38280AB5C0CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96EB6157-4DB3-444C-8C5F-38280AB5C0CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -30,6 +23,10 @@ Global
 		{DF4ABF0A-17B3-45D1-BFE4-6D2D1CC78499}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF4ABF0A-17B3-45D1-BFE4-6D2D1CC78499}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF4ABF0A-17B3-45D1-BFE4-6D2D1CC78499}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC42624A-88BA-4B40-86E2-D137A42FD270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC42624A-88BA-4B40-86E2-D137A42FD270}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC42624A-88BA-4B40-86E2-D137A42FD270}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC42624A-88BA-4B40-86E2-D137A42FD270}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

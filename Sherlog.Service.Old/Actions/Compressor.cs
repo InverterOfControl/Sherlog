@@ -1,9 +1,10 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using Serilog;
+using System.IO;
 
 namespace Sherlog.Service.Actions
 {
-  public class Compressor
+    public class Compressor
     {
         public static void Compress(string[] inputfiles, string output)
         {
